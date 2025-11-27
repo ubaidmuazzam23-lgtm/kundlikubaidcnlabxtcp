@@ -1,0 +1,36 @@
+#include <iostream>
+#include <unistd.h>
+#include <cstring>
+#include <arpa/inet.h>
+
+#define PORT 8081
+
+int main() {
+    int sockfd;
+    char buffer[1024];
+    struct sockaddr_in servaddr;
+
+    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sockfd < 0) {
+        perror("socket creation failed");
+        return 1;
+    }
+
+    memset(&servaddr, 0, sizeof(servaddr));
+
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(PORT);
+    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+    const char *hello = "Hello from UDP Client!";
+    sendto(sockfd, hello, strlen(hello), 0, (const struct sockaddr *) &servaddr, sizeof(servaddr));
+    std::cout << "Hello message sent from UDP Client" << std::endl;
+
+    socklen_t len = sizeof(servaddr);
+    int n = recvfrom(sockfd, (char *)buffer, 1024, 0, (struct sockaddr *) &servaddr, &len);
+    buffer[n] = '\0';
+    std::cout << "Server: " << buffer << std::endl;
+
+    close(sockfd);
+    return 0;
+}

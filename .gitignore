@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+.Trashes
+*.swp
+
+# build / temp
+*.log
+tmp/
+node_modules/
+
+# R / Python / IDE
+.Rhistory
+.RData
+.vscode/
+.idea/
+__pycache__/
